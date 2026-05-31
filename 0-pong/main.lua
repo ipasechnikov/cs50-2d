@@ -71,6 +71,28 @@ function love.keypressed(key)
 end
 
 function love.update(dt)
+  if gameState == 'play' then
+    if ball:collides(player1) then
+      ball.dx = -ball.dx * 1.03
+      ball.x = player1.x + player1.width
+
+      if ball.dy < 0 then
+        ball.dy = -math.random(10, 150)
+      else
+        ball.dy = math.random(10, 150)
+      end
+    elseif ball:collides(player2) then
+      ball.dx = -ball.dx * 1.03
+      ball.x = player2.x
+
+      if ball.dy < 0 then
+        ball.dy = -math.random(10, 150)
+      else
+        ball.dy = math.random(10, 150)
+      end
+    end
+  end
+
   if love.keyboard.isDown('w') then
     player1:moveUp(dt)
   elseif love.keyboard.isDown('s') then
