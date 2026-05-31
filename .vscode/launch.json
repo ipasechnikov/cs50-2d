@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lua-local",
+      "request": "launch",
+      "name": "0-pong (Debug)",
+      "program": {
+        "command": "love"
+      },
+      "cwd": "./0-pong",
+      "args": [".", "debug"]
+    },
+    {
+      "type": "lua-local",
+      "request": "launch",
+      "name": "0-pong (Release)",
+      "program": {
+        "command": "love"
+      },
+      "cwd": "./0-pong",
+      "args": ["."]
+    }
+  ]
+}
