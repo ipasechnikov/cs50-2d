@@ -25,28 +25,29 @@ function love.load()
 
   math.randomseed(os.time())
 
-  smallFont    = love.graphics.newFont('font.ttf', 8)
-  largeFont    = love.graphics.newFont('font.ttf', 32)
+  smallFont     = love.graphics.newFont('font.ttf', 8)
+  largeFont     = love.graphics.newFont('font.ttf', 32)
 
-  player1      = Paddle(5, 10, PADDLE_WIDTH, PADDLE_HEIGHT)
-  player2      = Paddle(
+  player1       = Paddle(5, 10, PADDLE_WIDTH, PADDLE_HEIGHT)
+  player2       = Paddle(
     VIRTUAL_WIDTH - PADDLE_WIDTH - 5,
     VIRTUAL_HEIGHT - PADDLE_HEIGHT - 10,
     PADDLE_WIDTH,
     PADDLE_HEIGHT
   )
 
-  ball         = Ball(
+  ball          = Ball(
     VIRTUAL_WIDTH / 2 - BALL_SIZE / 2,
     VIRTUAL_HEIGHT / 2 - BALL_SIZE / 2,
     BALL_SIZE,
     BALL_SIZE
   )
 
-  player1Score = 0
-  player2Score = 0
+  player1Score  = 0
+  player2Score  = 0
+  servingPlayer = math.random(1, 2)
 
-  gameState    = 'start'
+  gameState     = 'start'
 
   love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
     resizable = false,
@@ -62,10 +63,14 @@ function love.keypressed(key)
     love.event.quit()
   elseif key == 'enter' or key == 'return' then
     if gameState == 'start' then
+      gameState = 'serve'
+    elseif gameState == 'serve' then
+      if servingPlayer == 1 then
+        ball.dx = 100
+      elseif servingPlayer == 2 then
+        ball.dx = -100
+      end
       gameState = 'play'
-    else
-      gameState = 'start'
-      ball:reset()
     end
   end
 end
@@ -83,13 +88,35 @@ function love.update(dt)
       end
     elseif ball:collides(player2) then
       ball.dx = -ball.dx * 1.03
-      ball.x = player2.x
+      ball.x = player2.x - ball.width
 
       if ball.dy < 0 then
         ball.dy = -math.random(10, 150)
       else
         ball.dy = math.random(10, 150)
       end
+    end
+
+    if ball.y <= 0 then
+      ball.y = 0
+      ball.dy = -ball.dy
+    end
+
+    if ball.y >= VIRTUAL_HEIGHT - ball.height then
+      ball.y = VIRTUAL_HEIGHT - ball.height
+      ball.dy = -ball.dy
+    end
+
+    if ball.x < 0 then
+      servingPlayer = 1
+      player2Score = player2Score + 1
+      ball:reset()
+      gameState = 'serve'
+    elseif ball.x > VIRTUAL_WIDTH then
+      servingPlayer = 2
+      player1Score = player1Score + 1
+      ball:reset()
+      gameState = 'serve'
     end
   end
 
@@ -116,19 +143,26 @@ function love.draw()
 
   love.graphics.setFont(largeFont)
   love.graphics.print(
-    player1.score,
+    player1Score,
     VIRTUAL_WIDTH / 2 - 50,
     VIRTUAL_HEIGHT / 2 - 40
   )
   love.graphics.print(
-    player2.score,
+    player2Score,
     VIRTUAL_WIDTH / 2 + 50 - largeFont:getWidth(player2Score),
     VIRTUAL_HEIGHT / 2 - 40
   )
 
-  love.graphics.setFont(smallFont)
-  local gameStateStr = "Hello '" .. gameState .. "' state"
-  love.graphics.printf(gameStateStr, 0, VIRTUAL_HEIGHT / 2 - 80, VIRTUAL_WIDTH, 'center')
+  if gameState == 'start' then
+    love.graphics.setFont(smallFont)
+    love.graphics.printf('Welcome to Pong!', 0, 10, VIRTUAL_WIDTH, 'center')
+    love.graphics.printf('Press Enter to begin!', 0, 20, VIRTUAL_WIDTH, 'center')
+  elseif gameState == 'serve' then
+    love.graphics.setFont(smallFont)
+    love.graphics.printf('Player ' .. tostring(servingPlayer) .. "'s serve!", 0, 10, VIRTUAL_WIDTH, 'center')
+    love.graphics.printf('Press Enter to serve!', 0, 20, VIRTUAL_WIDTH, 'center')
+  elseif gameState == 'play' then
+  end
 
   player1:render()
   player2:render()
