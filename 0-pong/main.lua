@@ -71,6 +71,19 @@ function love.keypressed(key)
         ball.dx = -100
       end
       gameState = 'play'
+    elseif gameState == 'done' then
+      gameState = 'serve'
+
+      ball:reset()
+
+      player1Score = 0
+      player2Score = 0
+
+      if winningPlayer == 1 then
+        servingPlayer = 2
+      else
+        servingPlayer = 1
+      end
     end
   end
 end
@@ -110,13 +123,25 @@ function love.update(dt)
     if ball.x < 0 then
       servingPlayer = 1
       player2Score = player2Score + 1
-      ball:reset()
-      gameState = 'serve'
+
+      if player2Score == 10 then
+        winningPlayer = 2
+        gameState = 'done'
+      else
+        ball:reset()
+        gameState = 'serve'
+      end
     elseif ball.x > VIRTUAL_WIDTH then
       servingPlayer = 2
       player1Score = player1Score + 1
-      ball:reset()
-      gameState = 'serve'
+
+      if player1Score == 10 then
+        winningPlayer = 1
+        gameState = 'done'
+      else
+        ball:reset()
+        gameState = 'serve'
+      end
     end
   end
 
@@ -162,6 +187,11 @@ function love.draw()
     love.graphics.printf('Player ' .. tostring(servingPlayer) .. "'s serve!", 0, 10, VIRTUAL_WIDTH, 'center')
     love.graphics.printf('Press Enter to serve!', 0, 20, VIRTUAL_WIDTH, 'center')
   elseif gameState == 'play' then
+  elseif gameState == 'done' then
+    love.graphics.setFont(largeFont)
+    love.graphics.printf('Player ' .. tostring(winningPlayer) .. ' wins!', 0, 10, VIRTUAL_WIDTH, 'center')
+    love.graphics.setFont(smallFont)
+    love.graphics.printf('Press Enter to restart!', 0, largeFont:getHeight() + 20, VIRTUAL_WIDTH, 'center')
   end
 
   player1:render()
