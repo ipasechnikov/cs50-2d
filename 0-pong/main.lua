@@ -165,11 +165,13 @@ function love.update(dt)
     player1:moveDown(dt)
   end
 
-  if love.keyboard.isDown('up') then
-    player2:moveUp(dt)
-  elseif love.keyboard.isDown('down') then
-    player2:moveDown(dt)
-  end
+  -- if love.keyboard.isDown('up') then
+  --   player2:moveUp(dt)
+  -- elseif love.keyboard.isDown('down') then
+  --   player2:moveDown(dt)
+  -- end
+
+  player2Ai(dt)
 
   if gameState == 'play' then
     ball:update(dt)
@@ -226,6 +228,14 @@ function displayFPS()
   love.graphics.setColor(0, 255 / 255, 0, 255 / 255)
   love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
   love.graphics.setColor(1, 1, 1, 1)
+end
+
+function player2Ai(dt)
+  if ball.y < player2.y then
+    player2:moveUp(dt)
+  elseif ball.y > player2.y + player2.height then
+    player2:moveDown(dt)
+  end
 end
 
 local love_errorhandler = love.errorhandler
