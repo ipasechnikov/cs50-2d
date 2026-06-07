@@ -15,9 +15,9 @@ PADDLE_HEIGHT  = 20
 
 BALL_SIZE      = 4
 
-require('Paddle')
-require('Ball')
-local push = require('push')
+require('src.Paddle')
+require('src.Ball')
+local push = require('lib.push')
 
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -25,8 +25,8 @@ function love.load()
 
   math.randomseed(os.time())
 
-  smallFont     = love.graphics.newFont('font.ttf', 8)
-  largeFont     = love.graphics.newFont('font.ttf', 32)
+  smallFont     = love.graphics.newFont('fonts/font.ttf', 8)
+  largeFont     = love.graphics.newFont('fonts/font.ttf', 32)
 
   player1       = Paddle(5, 10, PADDLE_WIDTH, PADDLE_HEIGHT)
   player2       = Paddle(
