@@ -56,12 +56,12 @@ function love.load()
   }
 
   love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
-    resizable = false,
+    resizable = true,
     vsync = true,
     fullscreen = false,
   })
 
-  push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT)
+  push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, { resizable = true, fullscreen = false })
 end
 
 function love.keypressed(key)
@@ -215,6 +215,10 @@ function love.draw()
   displayFPS()
 
   push:finish()
+end
+
+function love.resize(w, h)
+  push:resize(w, h)
 end
 
 function displayFPS()
