@@ -1,0 +1,63 @@
+name: Build and Deploy Love2D to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build all games (lovejs)
+        run: |
+          docker build -t love-builder .
+
+          for game in 0-pong; do
+            if [ -d "$game" ]; then
+              echo "Building $game"
+
+              docker run --rm \
+                -v ${{ github.workspace }}/$game:/game \
+                love-builder \
+                makelove lovejs
+            fi
+          done
+
+      - name: Assemble static site
+        run: |
+          rm -rf site
+          mkdir -p site
+
+          # homepage
+          cat <<EOF > site/index.html
+          <!doctype html>
+          <html>
+          <head><meta charset="utf-8"><title>CS50 Games</title></head>
+          <body>
+            <h1>CS50 Game Collection</h1>
+            <ul>
+              <li><a href="pong/">Pong</a></li>
+            </ul>
+          </body>
+          </html>
+          EOF
+
+          # copy builds
+          unzip -q 0-pong/makelove-build/lovejs/*.zip -d site/pong
+          if [ -d site/pong/0-pong ]; then
+            mv site/pong/0-pong/* site/pong/
+            rmdir site/pong/0-pong
+          fi
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
