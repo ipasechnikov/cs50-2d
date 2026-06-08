@@ -20,6 +20,26 @@
       },
       "cwd": "./0-pong",
       "args": ["."]
+    },
+    {
+      "type": "lua-local",
+      "request": "launch",
+      "name": "1-flappy-bird (Debug)",
+      "program": {
+        "command": "love"
+      },
+      "cwd": "./1-flappy-bird",
+      "args": [".", "debug"]
+    },
+    {
+      "type": "lua-local",
+      "request": "launch",
+      "name": "1-flappy-bird (Release)",
+      "program": {
+        "command": "love"
+      },
+      "cwd": "./1-flappy-bird",
+      "args": ["."]
     }
   ]
 }
