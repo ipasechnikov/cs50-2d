@@ -1,7 +1,6 @@
 IMAGE_NAME := love-builder
-BUILD_DIR := build
 
-.PHONY: image build clean
+.PHONY: image build
 
 image:
 	docker build -t $(IMAGE_NAME) ../.
@@ -11,6 +10,3 @@ build: image
 		-v $(PWD):/game \
 		$(IMAGE_NAME) \
 		makelove
-
-clean:
-	rm -rf $(BUILD_DIR)
