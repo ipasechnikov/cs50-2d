@@ -1,13 +1,5 @@
 ---@diagnostic disable: duplicate-set-field
 
-local lldebugger
-if arg[2] == 'debug' then
-  lldebugger = require('lldebugger')
-  lldebugger.start()
-end
-
-
-
 local push = require('lib.push')
 
 
@@ -46,13 +38,4 @@ end
 
 function love.resize(w, h)
   push:resize(w, h)
-end
-
-local love_errorhandler = love.errorhandler
-function love.errorhandler(msg)
-  if lldebugger then
-    error(msg, 2)
-  else
-    return love_errorhandler(msg)
-  end
 end
